@@ -25,7 +25,7 @@ const App = () => {
 
   const handleChange = ({ target: { value } }) => setFilterValue(value.trim());
 
-  const handleFilter = () =>
+  const handleFilterContacts = () =>
     contactsList.length
       ? contactsList.filter(({ name }) =>
           name.toLowerCase().startsWith(filterValue.toLowerCase())
@@ -35,7 +35,7 @@ const App = () => {
   const handleDelete = id =>
     setContactsList(prevList => prevList.filter(contact => contact.id !== id));
 
-  const filteredContacts = handleFilter();
+  const filteredContacts = handleFilterContacts();
   return (
     <div
       style={{
