@@ -1,0 +1,31 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  height: 48px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #010101;
+  background-color: transparent;
+  border-radius: 6px;
+  border: 1px solid #010101;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+.button:hover, 
+.button:focus {
+  color: #fff;
+  background-color: rgb(158, 7, 7);
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.item:not(:last-child) {
+  margin-bottom: 30px;
+}

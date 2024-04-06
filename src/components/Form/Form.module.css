@@ -1,0 +1,36 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+  height: 48px;
+  padding: 0 30px;
+  font-size: 20px;
+  color: aliceblue;
+  border-radius: 6px;
+  background-color: #03ab81;
+  transition: background-color .3s ease, color .3s ease;
+}
+
+.button:hover,
+.button:focus {
+  color: #03ab81;
+  background-color: aliceblue;
+}
+
+.input {
+  height: 48px;
+  padding: 0 10px;
+  font-size: 20px;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+}
