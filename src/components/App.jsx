@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 
 import { nanoid } from 'nanoid';
 import { ToastContainer, toast } from 'react-toastify';
@@ -9,103 +9,62 @@ import Form from './Form/Form';
 import Contacts from './Contacts/Contacts';
 import Filter from './Filter/Filter';
 
-class App extends Component {
-  state = {
-    contacts: [],
-    filter: '',
-  };
+const App = () => {
+  const [contactsList, setContactsList] = useState([]);
+  const [filterValue, setFilterValue] = useState('');
 
-  componentDidMount = () => {
-    const contacts = localStorage.getItem('contacts');
-    if (contacts) {
-      this.setState({ contacts: JSON.parse(contacts) });
-    }
-  };
-
-  componentDidUpdate = (_, prevState) => {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
-    }
-  };
-
-  handleContactAdd = newContact => {
-    const { contacts } = this.state;
-
-    const isContactExists = contacts.some(
+  const handleContactAdd = newContact => {
+    const isContactExists = contactsList.some(
       contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
     );
 
-    if (isContactExists) {
-      toast(`Contact "${newContact.name}" already exists`);
-      return;
-    }
-
-    this.setState(prev => ({
-      ...prev,
-      contacts: [...prev.contacts, { ...newContact, id: nanoid() }],
-    }));
+    isContactExists
+      ? toast(`Contact "${newContact.name}" already exists`)
+      : setContactsList(prev => [...prev, { ...newContact, id: nanoid() }]);
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
+  const handleChange = ({ target: { value } }) => setFilterValue(value.trim());
 
-    if (!value.trim()) {
-      this.setState({ [name]: '' });
-      return;
-    }
+  const handleFilter = () =>
+    contactsList.length
+      ? contactsList.filter(({ name }) =>
+          name.toLowerCase().startsWith(filterValue.toLowerCase())
+        )
+      : [];
 
-    this.setState({ [name]: value.trim() });
-  };
+  const handleDelete = id =>
+    setContactsList(prevList => prevList.filter(contact => contact.id !== id));
 
-  handleFilter = () => {
-    const contacts = [...this.state.contacts];
-    const { filter: query } = this.state;
-    if (!contacts.length) return [];
-
-    return contacts.filter(({ name }) =>
-      name.toLowerCase().startsWith(query.toLowerCase())
-    );
-  };
-
-  handleDelete = id => {
-    this.setState(prev => {
-      const contacts = [...prev.contacts];
-      const updatedContacts = contacts.filter(contact => contact.id !== id);
-      return { ...prev, contacts: updatedContacts };
-    });
-  };
-
-  render() {
-    const filteredContacts = this.handleFilter();
-    return (
-      <div
-        style={{
-          height: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          padding: '60px',
-          fontSize: 40,
-          color: '#010101',
-        }}
-      >
-        <Section title="Phonebook">
-          <Form handleContactAdd={this.handleContactAdd} />
-        </Section>
-        <Section title="Contacts">
-          <Filter
-            handleChange={this.handleChange}
-            isFilterDisabled={!this.state.contacts.length}
+  const filteredContacts = handleFilter();
+  return (
+    <div
+      style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '60px',
+        fontSize: 40,
+        color: '#010101',
+      }}
+    >
+      <Section title="Phonebook">
+        <Form handleContactAdd={handleContactAdd} />
+      </Section>
+      <Section title="Contacts">
+        <Filter
+          handleChange={handleChange}
+          isFilterDisabled={!contactsList.length}
+        />
+        {!!filteredContacts.length && (
+          <Contacts
+            contacts={filteredContacts || []}
+            handleDelete={handleDelete}
           />
-          {!!filteredContacts.length && (
-            <Contacts
-              contacts={filteredContacts || []}
-              handleDelete={this.handleDelete}
-            />
-          )}
-        </Section>
-        <ToastContainer />
-      </div>
-    );
-  }
-}
+        )}
+      </Section>
+      <ToastContainer />
+    </div>
+  );
+};
+
 export { App };
