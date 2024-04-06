@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { nanoid } from 'nanoid';
 import { ToastContainer, toast } from 'react-toastify';
@@ -12,6 +12,18 @@ import Filter from './Filter/Filter';
 const App = () => {
   const [contactsList, setContactsList] = useState([]);
   const [filterValue, setFilterValue] = useState('');
+
+  useEffect(() => {
+    const contacts = localStorage.getItem('contacts');
+    if (contacts) {
+      const parsedContacts = JSON.parse(contacts);
+      if (!!parsedContacts.length) setContactsList(parsedContacts);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('contacts', JSON.stringify(contactsList));
+  }, [contactsList]);
 
   const handleContactAdd = newContact => {
     const isContactExists = contactsList.some(
