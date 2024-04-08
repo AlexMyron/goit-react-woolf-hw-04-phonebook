@@ -9,17 +9,11 @@ import Form from './Form/Form';
 import Contacts from './Contacts/Contacts';
 import Filter from './Filter/Filter';
 
-const App = () => {
-  const [contactsList, setContactsList] = useState([]);
-  const [filterValue, setFilterValue] = useState('');
+import { initStorage } from '../services/LocalStorageAPI';
 
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    if (contacts) {
-      const parsedContacts = JSON.parse(contacts);
-      if (!!parsedContacts.length) setContactsList(parsedContacts);
-    }
-  }, []);
+const App = () => {
+  const [contactsList, setContactsList] = useState(initStorage);
+  const [filterValue, setFilterValue] = useState('');
 
   useEffect(() => {
     localStorage.setItem('contacts', JSON.stringify(contactsList));
